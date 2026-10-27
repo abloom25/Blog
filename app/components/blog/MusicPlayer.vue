@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MusicTrack } from '~~/shared/types/music'
+import { getMusicPlaylistUrl, parseMusicPlaylist } from '~~/shared/utils/music'
 
 interface LyricLine {
 	time: number
@@ -20,14 +21,20 @@ const instrumentalLyricPattern = /^纯音乐[，,、\s]*请欣赏[。！!]?$/
 
 const appConfig = useAppConfig()
 const audioEl = useTemplateRef('audio')
+const playlistUrl = computed(() => import.meta.dev ? '/api/music' : getMusicPlaylistUrl(appConfig.music))
 
-const { data: tracks, status } = await useFetch<MusicTrack[]>('/api/music', {
-	default: () => [],
+const { data: tracks, status, refresh } = await useFetch(playlistUrl, {
+	key: 'music-playlist',
+	server: false,
+	lazy: true,
+	timeout: 10_000,
+	retry: 1,
+	transform: (data: unknown) => parseMusicPlaylist(data, appConfig.music.api),
+	default: (): MusicTrack[] => [],
 })
 
 const currentIndex = ref(0)
 const currentTime = ref(0)
-const failedTrackCount = ref(0)
 const isAudioLoading = ref(false)
 const isHovered = ref(false)
 const isInitialized = ref(false)
@@ -38,15 +45,20 @@ const lyricsLoading = ref(false)
 const showTrackInfo = ref(true)
 
 let lyricAbortController: AbortController | undefined
+let playbackRequestId = 0
 let shuffledTrackIndexes: number[] = []
 let shuffledTrackPosition = 0
 let trackInfoTimer: ReturnType<typeof setTimeout> | undefined
+const failedTrackUrls = new Set<string>()
 
 const currentTrack = computed(() =>
-	isInitialized.value ? tracks.value[currentIndex.value] : undefined,
+	isInitialized.value && status.value === 'success' ? tracks.value[currentIndex.value] : undefined,
 )
-const isLoading = computed(() => status.value === 'pending' || isAudioLoading.value)
+const isPlaylistLoading = computed(() => status.value === 'idle' || status.value === 'pending')
+const canRetry = computed(() => !isPlaylistLoading.value && (status.value === 'error' || isUnavailable.value || !tracks.value.length))
+const isLoading = computed(() => isPlaylistLoading.value || isAudioLoading.value)
 const isPlaybackActive = computed(() => isPlaying.value || isAudioLoading.value)
+const playButtonLabel = computed(() => canRetry.value ? '重试' : isPlaybackActive.value ? '暂停' : '播放')
 const hasLyrics = computed(() => lyrics.value.length > 0)
 const currentLyric = computed(() => {
 	if (!lyrics.value.length)
@@ -61,6 +73,7 @@ const currentLyric = computed(() => {
 })
 const displayTrackInfo = computed(() =>
 	!isPlaying.value
+	|| canRetry.value
 	|| isHovered.value
 	|| showTrackInfo.value
 	|| lyricsLoading.value
@@ -68,26 +81,30 @@ const displayTrackInfo = computed(() =>
 	|| !currentLyric.value,
 )
 const playerLabel = computed(() => {
-	if (status.value === 'pending')
+	if (isPlaylistLoading.value)
 		return '正在加载歌单'
-	if (status.value === 'error' || isUnavailable.value || !tracks.value.length)
+	if (canRetry.value)
 		return '音乐暂时不可用'
 	return currentTrack.value?.name || '音乐播放器'
 })
 
 onMounted(() => {
-	initializeShuffledTracks()
 	isInitialized.value = true
-	applyVolume()
 	revealTrackInfo()
 	setupMediaSession()
 })
 
 onUnmounted(() => {
+	pause()
 	lyricAbortController?.abort()
 	clearTimeout(trackInfoTimer)
 	clearMediaSession()
 })
+
+watch([tracks, isInitialized], ([, initialized]) => {
+	if (initialized)
+		resetPlaylist()
+}, { flush: 'sync' })
 
 watch(currentTrack, () => {
 	currentTime.value = 0
@@ -104,6 +121,22 @@ watch([currentLyric, isPlaying], () => updateMediaMetadata())
 function applyVolume() {
 	if (audioEl.value)
 		audioEl.value.volume = Math.min(1, Math.max(0, appConfig.music.defaultVolume))
+}
+
+function resetPlaylist() {
+	pause()
+	failedTrackUrls.clear()
+	isUnavailable.value = false
+	currentTime.value = 0
+	currentIndex.value = 0
+	shuffledTrackIndexes = []
+	shuffledTrackPosition = 0
+	initializeShuffledTracks()
+}
+
+async function retryPlaylist() {
+	pause()
+	await refresh()
 }
 
 function parseTimestamp(match: RegExpMatchArray) {
@@ -199,26 +232,31 @@ function parseLyrics(source: string) {
 async function loadLyrics() {
 	lyricAbortController?.abort()
 	lyrics.value = []
+	lyricsLoading.value = false
 
 	const track = currentTrack.value
 	if (!track?.lrc)
 		return
 
-	lyricAbortController = new AbortController()
+	const controller = new AbortController()
+	lyricAbortController = controller
 	lyricsLoading.value = true
 	try {
 		const source = await $fetch<string>(track.lrc, {
 			responseType: 'text',
-			signal: lyricAbortController.signal,
+			signal: controller.signal,
+			timeout: 10_000,
 		})
-		lyrics.value = parseLyrics(source)
+		if (lyricAbortController === controller && currentTrack.value?.url === track.url)
+			lyrics.value = parseLyrics(source)
 	}
 	catch (error) {
 		if (!isAbortError(error))
 			console.warn('[music] 无法获取歌词', error)
 	}
 	finally {
-		lyricsLoading.value = false
+		if (lyricAbortController === controller)
+			lyricsLoading.value = false
 	}
 }
 
@@ -306,32 +344,46 @@ function getPreviousShuffledTrackIndex() {
 
 async function play() {
 	const audio = audioEl.value
-	if (!audio || !currentTrack.value || isUnavailable.value)
+	const source = currentTrack.value?.url
+	if (!audio || !source || canRetry.value || isPlaylistLoading.value)
 		return
 
+	const requestId = ++playbackRequestId
 	isAudioLoading.value = true
+	applyVolume()
 	try {
 		await audio.play()
+		if (requestId !== playbackRequestId || audio !== audioEl.value || source !== currentTrack.value?.url)
+			return
+
 		isPlaying.value = true
 		isAudioLoading.value = false
-		failedTrackCount.value = 0
+		failedTrackUrls.clear()
 	}
 	catch (error) {
-		isAudioLoading.value = false
-		if (error instanceof DOMException && ['AbortError', 'NotAllowedError'].includes(error.name))
+		if (requestId !== playbackRequestId || audio !== audioEl.value || source !== currentTrack.value?.url)
 			return
-		handleTrackError()
+
+		if (error instanceof DOMException && ['AbortError', 'NotAllowedError'].includes(error.name)) {
+			isAudioLoading.value = false
+			isPlaying.value = false
+			return
+		}
+		handleTrackError(source, true)
 	}
 }
 
 function pause() {
+	playbackRequestId++
 	audioEl.value?.pause()
 	isAudioLoading.value = false
 	isPlaying.value = false
 }
 
 function togglePlayback() {
-	if (isPlaybackActive.value)
+	if (canRetry.value)
+		void retryPlaylist()
+	else if (isPlaybackActive.value)
 		pause()
 	else
 		void play()
@@ -366,12 +418,15 @@ async function switchTrack(index: number | undefined, continuePlaying: boolean) 
 	if (index === undefined)
 		return
 
-	audioEl.value?.pause()
-	isPlaying.value = false
+	pause()
+	const requestId = playbackRequestId
 	isAudioLoading.value = continuePlaying
 	currentIndex.value = index
 
 	await nextTick()
+	if (requestId !== playbackRequestId || currentIndex.value !== index)
+		return
+
 	applyVolume()
 	audioEl.value?.load()
 	if (continuePlaying)
@@ -493,23 +548,58 @@ function seekTo(time: number, fastSeek = false) {
 	updateMediaPositionState()
 }
 
-function handleTrackError() {
-	if (!tracks.value.length || isUnavailable.value)
+function handleAudioError(event: Event) {
+	const audio = event.currentTarget as HTMLAudioElement
+	if (audio !== audioEl.value)
 		return
 
-	failedTrackCount.value++
-	if (failedTrackCount.value >= tracks.value.length) {
-		pause()
+	handleTrackError(audio.currentSrc || audio.src)
+}
+
+function handleAudioPlayback(event: Event) {
+	const audio = event.currentTarget as HTMLAudioElement
+	if (audio !== audioEl.value)
+		return
+
+	isPlaying.value = !audio.paused
+	if (isPlaying.value)
 		isAudioLoading.value = false
+}
+
+function handleAudioEnded(event: Event) {
+	if (event.currentTarget === audioEl.value)
+		void nextTrack(true)
+}
+
+function handleTrackError(source: string, continuePlaying = isPlaybackActive.value) {
+	if (isPlaylistLoading.value || isUnavailable.value || source !== currentTrack.value?.url || failedTrackUrls.has(source))
+		return
+
+	failedTrackUrls.add(source)
+	const availableTrackCount = new Set(tracks.value.map(track => track.url)).size
+	if (failedTrackUrls.size >= availableTrackCount) {
+		pause()
 		isUnavailable.value = true
 		return
 	}
 
-	void nextTrack(true)
+	for (let offset = 1; offset <= shuffledTrackIndexes.length; offset++) {
+		const position = (shuffledTrackPosition + offset) % shuffledTrackIndexes.length
+		const index = shuffledTrackIndexes[position]!
+		if (!failedTrackUrls.has(tracks.value[index]!.url)) {
+			shuffledTrackPosition = position
+			void switchTrack(index, continuePlaying)
+			return
+		}
+	}
 }
 
 function updateCurrentTime(event: Event) {
-	currentTime.value = (event.currentTarget as HTMLAudioElement).currentTime
+	const audio = event.currentTarget as HTMLAudioElement
+	if (audio !== audioEl.value)
+		return
+
+	currentTime.value = audio.currentTime
 	updateMediaPositionState()
 }
 
@@ -529,17 +619,16 @@ function handleLoadedMetadata() {
 >
 	<audio
 		v-if="currentTrack"
+		:key="currentTrack.url"
 		ref="audio"
 		:src="currentTrack.url"
-		preload="metadata"
-		@canplay="isAudioLoading = false"
-		@ended="nextTrack(true)"
-		@error="handleTrackError"
+		preload="none"
+		@ended="handleAudioEnded"
+		@error="handleAudioError"
 		@durationchange="updateMediaPositionState"
 		@loadedmetadata="handleLoadedMetadata"
-		@loadstart="isAudioLoading = isPlaying"
-		@pause="isPlaying = false"
-		@playing="isPlaying = true"
+		@pause="handleAudioPlayback"
+		@playing="handleAudioPlayback"
 		@ratechange="updateMediaPositionState"
 		@timeupdate="updateCurrentTime"
 	/>
@@ -561,8 +650,8 @@ function handleLoadedMetadata() {
 	<div class="display" aria-live="polite">
 		<Transition name="display-swap" mode="out-in">
 			<div v-if="displayTrackInfo" key="track" class="track-info">
-				<strong :title="currentTrack?.name">{{ currentTrack?.name || playerLabel }}</strong>
-				<span :title="currentTrack?.artist">{{ currentTrack?.artist || 'Meting' }}</span>
+				<strong :title="playerLabel">{{ playerLabel }}</strong>
+				<span :title="currentTrack?.artist">{{ canRetry ? '点击重试' : currentTrack?.artist || 'Meting' }}</span>
 			</div>
 			<div v-else key="lyric" class="lyric-window">
 				<Transition name="lyric-scroll" mode="out-in">
@@ -590,23 +679,23 @@ function handleLoadedMetadata() {
 
 	<div class="controls">
 		<button
-			v-tip="isPlaybackActive ? '暂停' : '播放'"
+			v-tip="playButtonLabel"
 			class="play-button"
-			:aria-label="isPlaybackActive ? '暂停' : '播放'"
-			:disabled="!currentTrack || isUnavailable"
+			:aria-label="playButtonLabel"
+			:disabled="isPlaylistLoading || (!canRetry && !currentTrack)"
 			@click="togglePlayback"
 		>
 			<Icon
-				:name="status === 'pending'
+				:name="isPlaylistLoading
 					? 'line-md:loading-loop'
-					: isPlaybackActive ? 'tabler:player-pause' : 'tabler:player-play'"
+					: canRetry ? 'tabler:reload' : isPlaybackActive ? 'tabler:player-pause' : 'tabler:player-play'"
 			/>
 		</button>
 
 		<button
 			v-tip="'下一首'"
 			aria-label="下一首"
-			:disabled="!currentTrack || isUnavailable"
+			:disabled="isPlaylistLoading || !currentTrack || canRetry"
 			@click="nextTrack()"
 		>
 			<Icon name="tabler:player-skip-forward" />

@@ -82,7 +82,6 @@ export default defineNuxtConfig({
 	// @keep-sorted
 	routeRules: {
 		...mapValues(redirectList, to => ({ redirect: { to, statusCode: 308 as const } })),
-		'/api/music': { prerender: true, headers: { 'Content-Type': 'application/json' } },
 		'/api/stats': { prerender: true, headers: { 'Content-Type': 'application/json' } },
 		'/atom.xml': { prerender: true, headers: { 'Content-Type': 'application/xml' } },
 		'/favicon.ico': { redirect: { to: blogConfig.favicon } },

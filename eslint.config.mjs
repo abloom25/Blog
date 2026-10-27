@@ -26,6 +26,12 @@ export default antfu({
 		'yaml/indent': ['error', 2],
 	},
 }, {
+	files: ['tests/**/*.test.mjs'],
+	rules: {
+		// 此项目的音乐测试直接使用 Node 内置测试运行器。
+		'test/no-import-node-test': 'off',
+	},
+}, {
 	files: ['app/pages/**/*.vue'],
 	rules: {
 		'vue/valid-v-slot': 'off',

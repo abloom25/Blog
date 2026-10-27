@@ -21,6 +21,7 @@
     "bump": "pnpx taze -w && pnpm clean --lockfile && pnpm install",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "test:music": "node --test tests/music.test.mjs",
     "init-project": "unrun scripts/init-project.ts",
     "new": "unrun scripts/new-blog.ts",
     "check:feed": "unrun scripts/framework/get-feed.ts",

@@ -1,48 +1,23 @@
 import type { MusicTrack } from '~~/shared/types/music'
-import { z } from 'zod'
 import blogConfig from '~~/blog.config'
+import { getMusicPlaylistUrl, parseMusicPlaylist } from '~~/shared/utils/music'
 
-const httpUrl = z.url().refine(url => ['http:', 'https:'].includes(new URL(url).protocol))
-
-const metingTrackSchema = z.object({
-	title: z.string().trim().min(1),
-	author: z.string().trim().min(1),
-	url: httpUrl,
-	pic: httpUrl,
-	lrc: httpUrl,
-})
-
-export default defineEventHandler(async (): Promise<MusicTrack[]> => {
+export default defineEventHandler(async (event): Promise<MusicTrack[]> => {
+	setResponseHeader(event, 'Cache-Control', 'no-store')
 	if (!blogConfig.music.enabled)
 		return []
 
-	const endpoint = new URL(blogConfig.music.api)
-	endpoint.searchParams.set('server', blogConfig.music.server)
-	endpoint.searchParams.set('type', blogConfig.music.type)
-	endpoint.searchParams.set('id', blogConfig.music.id)
-
 	try {
-		const data = await $fetch<unknown>(endpoint.toString())
-		if (!Array.isArray(data)) {
-			console.warn('[music] Meting API 返回值不是歌曲数组')
-			return []
-		}
-
-		return data.flatMap((item) => {
-			const parsed = metingTrackSchema.safeParse(item)
-			if (!parsed.success)
-				return []
-			return [{
-				name: parsed.data.title,
-				artist: parsed.data.author,
-				url: parsed.data.url,
-				pic: parsed.data.pic,
-				lrc: parsed.data.lrc,
-			}]
+		const data = await $fetch<unknown>(getMusicPlaylistUrl(blogConfig.music), {
+			// 本地开发请求同源接口时，用博客自身的来源访问受来源限制的 API。
+			headers: { Referer: blogConfig.url },
+			timeout: 10_000,
+			retry: 1,
 		})
+		return parseMusicPlaylist(data, blogConfig.music.api)
 	}
 	catch (error) {
 		console.warn('[music] 无法获取 Meting 歌单', error)
-		return []
+		throw createError({ statusCode: 502, statusMessage: 'Music playlist is unavailable' })
 	}
 })
