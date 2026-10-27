@@ -38,6 +38,7 @@ const blogConfig = {
 			Nightlight: { icon: 'tabler:sparkles', color: '#C68C65' },
 			开发: { icon: 'tabler:code', color: '#7777ff' },
 			唤青映记: { icon: 'tabler:book-2', color: '#3ba' },
+			游戏: { icon: 'tabler:device-gamepad-2', color: '#8b5cf6' },
 		},
 		/** 文章版式，首个为默认版式 */
 		types: {

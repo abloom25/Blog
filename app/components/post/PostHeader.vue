@@ -10,6 +10,7 @@ const appConfig = useAppConfig()
 const coverFilter = computed(() => props.meta?.coverFilter || (props.meta?.coverDim && 'brightness(0.75)') || undefined)
 
 const shareText = `【${appConfig.title}】${props.title}\n\n${
+	props.subtitle ? `${props.subtitle}\n\n` : ''}${
 	props.description ? `${props.description}\n\n` : ''}${
 	new URL(props.path!, appConfig.url).href}`
 
@@ -58,9 +59,14 @@ const { copy, copied } = useCopy(shareText)
 		</div>
 	</div>
 
-	<h1 class="post-title" :class="getPostTypeClassName(type)">
-		{{ title }}
-	</h1>
+	<hgroup class="post-heading" :class="{ 'has-subtitle': subtitle, 'is-story': type === 'story' }">
+		<h1 class="post-title" :class="getPostTypeClassName(type)">
+			{{ title }}
+		</h1>
+		<p v-if="subtitle" class="post-subtitle">
+			{{ subtitle }}
+		</p>
+	</hgroup>
 </div>
 </template>
 
@@ -96,13 +102,17 @@ const { copy, copied } = useCopy(shareText)
 			filter: drop-shadow(0 1px 2px #000);
 		}
 
-		.post-title {
+		.post-heading {
 			background-image: linear-gradient(transparent, #0003, #0005);
 			text-shadow: var(--text-shadow-black);
 
-			&.text-story {
+			&.is-story {
 				text-align: center;
 			}
+		}
+
+		.post-subtitle {
+			color: inherit;
 		}
 	}
 }
@@ -127,11 +137,35 @@ const { copy, copied } = useCopy(shareText)
 	}
 }
 
+.post-heading {
+	z-index: 1;
+
+	&.has-subtitle {
+		.post-title {
+			padding-bottom: 0.4em;
+		}
+
+		&.is-story {
+			padding-block: 0.5rem;
+			text-align: center;
+		}
+	}
+}
+
 .post-title {
 	padding: 0.8em 1rem;
 	font-size: 1.6em;
 	line-height: 1.2;
-	z-index: 1;
+	text-wrap: balance;
+}
+
+.post-subtitle {
+	margin: 0;
+	padding: 0 1rem 1.5rem;
+	font-size: 0.95rem;
+	line-height: 1.7;
+	text-wrap: balance;
+	color: var(--c-text-2);
 }
 
 .post-nav {

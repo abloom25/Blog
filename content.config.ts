@@ -10,6 +10,7 @@ const articleTypes = Object.keys(blogConfig.article.types) as any
 
 export interface ArticleSchema {
 	title?: string
+	subtitle?: string
 	description?: string
 	date?: string
 	updated?: string
@@ -30,6 +31,7 @@ export interface ArticleSchema {
 
 const articleSchema = z.object({
 	title: z.string().optional(),
+	subtitle: z.string().optional(),
 	description: z.string().optional(),
 	date: z.string().optional(),
 	updated: z.string().optional(),
