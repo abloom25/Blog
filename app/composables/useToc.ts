@@ -3,40 +3,40 @@ import type { MaybeComputedElementRef } from '@vueuse/core'
 
 interface TocList {
 	id: string
-	offsetTop: number
+	offsetTop: number | undefined
 }
 
 export function useToc(toc: MaybeRefOrGetter<Toc | undefined>, scrollableEl?: MaybeComputedElementRef) {
-	const { height: bodyHeight } = useElementSize(document?.body)
+	const { height: bodyHeight } = useElementSize(import.meta.client ? document.body : undefined)
+	const { y: scrollY } = useWindowScroll()
 
 	function flattenToc(tocTree: TocLink[], tocList: TocList[] = []) {
-		tocTree.forEach((item) => {
-			const headingEl = document.getElementById(item.id)
-			if (headingEl)
-				tocList.push({ id: item.id, offsetTop: headingEl.offsetTop })
-			if (item.children)
-				flattenToc(item.children, tocList)
+		tocTree.forEach(({ id, children }) => {
+			const heading = document.getElementById(id)
+			const headingOffset = heading ? heading.getBoundingClientRect().top + window.scrollY : undefined
+			tocList.push({ id, offsetTop: headingOffset })
+			children && flattenToc(children, tocList)
 		})
 		return tocList
 	}
 
 	const tocOffsets = computedWithControl(
-		refDebounced(bodyHeight),
-		() => document ? flattenToc(toValue(toc)?.links || []).reverse() : [],
+		[toRef(toc), refDebounced(bodyHeight)],
+		() => import.meta.client ? flattenToc(toValue(toc)?.links || []).reverse() : [],
 	)
 
-	const { y: windowScrollY } = useWindowScroll()
+	onMounted(() => nextTick(() => tocOffsets.trigger()))
 
 	function getActiveHeading() {
 		const scrollMargin = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('scroll-margin-top'))
-		const scrollPosition = windowScrollY.value + (scrollMargin || 64)
+		const scrollOffset = scrollY.value + (scrollMargin || 64)
 		// 为兼容性不使用 findLast，而是使用倒序的 tocOffsets
-		return tocOffsets.value.find(item => item.offsetTop <= scrollPosition)?.id
+		return tocOffsets.value.find(item => item.offsetTop !== undefined && item.offsetTop <= scrollOffset)?.id
 	}
 
 	const activeHeadingId = computedWithControl(
-		refThrottled(windowScrollY, undefined, true),
-		() => document && getActiveHeading(),
+		[refThrottled(scrollY, undefined, true), tocOffsets],
+		() => import.meta.client ? getActiveHeading() : undefined,
 	)
 
 	function scrollToActiveTocItem() {

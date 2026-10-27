@@ -615,7 +615,7 @@ function handleLoadedMetadata() {
 </section>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .music-player {
 	display: flex;
 	align-items: center;

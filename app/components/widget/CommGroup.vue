@@ -4,19 +4,20 @@
 	dim
 	title="推荐技术社区"
 	bg-img="https://p.qlogo.cn/gh/169994096/169994096/100/"
-	bg-right
+	bg-aside
 >
 	<div class="title text-creative">
 		纸网接入点
 	</div>
 
 	<Tip copy icon :tip-options="{ placement: 'left' }">
-		<Icon name="ri:qq-fill" />169994096
+		<Icon name="ri:qq-fill" />
+		<span>169994096</span>
 	</Tip>
 </BlogWidget>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .title {
 	background-clip: text;
 	background-image: linear-gradient(60deg, var(--c-accent) -30%, var(--c-primary), var(--c-text-1));

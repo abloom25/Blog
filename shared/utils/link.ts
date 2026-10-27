@@ -38,7 +38,7 @@ export function getGithubUsername(url?: string) {
 
 export function isExtLink(url?: string) {
 	return url
-		? url.includes(':') || !!isPathFile(url)
+		? url.includes(':') || url.startsWith('//') || !!isPathFile(url)
 		: false
 }
 
@@ -49,4 +49,9 @@ export function safelyDecodeUriComponent(str: string) {
 	catch {
 		return str
 	}
+}
+
+/** 静态托管添加的尾斜杠不应改变页面身份或 Content 缓存键。 */
+export function normalizeContentPath(path: string) {
+	return path.replace(/\/+$/, '') || '/'
 }

@@ -108,6 +108,8 @@ class: gradient-card active
 
 还可以通过在反引号后加 `{lang="js"}` 等语言实现高亮，例如 `const a = 1`{lang="js"} 。
 
+也可以加上 `copy` 展示复制按钮，例如 `pnpm dev`{lang="sh" copy} 。
+
 ### 代码块 `ProsePre`
 
 ```
@@ -330,7 +332,7 @@ link: https://content.nuxt.com/docs/files/markdown#mdc-syntax
 
 ### 乐谱渲染播放
 
-> 由自编写的remark-music插件实现，必要时可用豆包等 AI 将乐谱识别为 ABC 记法。只在网络状态良好时加载播放能力。
+> 由自编写的remark-code-component插件实现，必要时可用豆包等 AI 将乐谱识别为 ABC 记法。只在网络状态良好时加载播放能力。
 >
 > 编辑器、Cheat Sheet 和语法检查：https://editor.drawthedots.com/
 
@@ -390,6 +392,40 @@ w: 冰 城 甜 蜜 | 蜜 | 你 爱 我 | 我 爱 你 蜜 雪 冰 城 甜 蜜 | �
 [V:1] GB z2 | A2 AF | E2 z2 | FA A>B | AF DD/E/ | FF EE | D2 z2 |]
 w: 我 呀 | 我 爱 | 你 | 你 爱 我 | 我 爱 你 蜜 雪 冰 城 甜 蜜 | 蜜
 [V:2] .G,,[B,G,] .D,[B,G,] | .D,,[F,D,] .A,,[F,D,] | .A,,[A,C] .E,[A,C] | .D,,[F,D,] .A,,[F,D,] | .D,,[F,D,] .A,,[F,D,] | .G,,[G,D,] .A,,[E,A,] | .D,.A,, [D,,D,]2 |]
+```
+````
+::
+
+### 图表渲染
+
+> 由自编写的remark-code-component插件实现，语法参见 [Mermaid 文档](https://mermaid.js.org/intro/syntax-reference.html)。图表跟随亮暗色模式重绘，进入视口附近才会加载渲染器。超宽图表可横向滚动，悬停或点击图表可切换为适应宽度。
+
+::tab{:tabs='["组件","语法"]'}
+#tab1
+```mermaid
+graph TD
+    A[间断点] --> B[第一类间断点]
+    A --> C[第二类间断点]
+
+    B --> B1[可去间断点]
+    B --> B2[跳跃间断点]
+
+    C --> C1[无穷间断点]
+    C --> C2[振荡间断点]
+```
+
+#tab2
+````mdc wrap expand
+```mermaid
+graph TD
+    A[间断点] --> B[第一类间断点]
+    A --> C[第二类间断点]
+
+    B --> B1[可去间断点]
+    B --> B2[跳跃间断点]
+
+    C --> C1[无穷间断点]
+    C --> C2[振荡间断点]
 ```
 ````
 ::
@@ -1042,11 +1078,11 @@ active: 2 # 默认显示第二个选项卡，可选
 
 ::tab{:tabs='["组件","语法"]'}
 #tab1
-:tip[我是一条小提示]{tip="提示的内容是提示"}， :tip[我没有图标]{icon tip="或许也可以没有内容"}， :tip[+v 点击就能复制，太方便了！]{copy}
+:tip[我是一条小提示]{tip="提示的内容是提示"}， :tip[我没有图标]{icon tip="或许也可以没有内容"}
 
 #tab2
 ```mdc wrap
-:tip[我是一条小提示]{tip="提示的内容是提示"}， :tip[我没有图标]{icon tip="或许也可以没有内容"}， :tip[+v 点击就能复制，太方便了！]{copy}
+:tip[我是一条小提示]{tip="提示的内容是提示"}， :tip[我没有图标]{icon tip="或许也可以没有内容"}
 ```
 ::
 

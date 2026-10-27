@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
+import { LayoutSlotsForward } from '#build/dxup/layouts.mjs'
 
 defineProps<{
 	error: NuxtError & { url?: string }
 }>()
-
-const layoutStore = useLayoutStore()
-layoutStore.setAside(['blog-log'])
 </script>
 
 <template>
-<NuxtLoadingIndicator />
-<NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
-<BlogSkipToContent />
-<BlogSidebar />
-<div id="content">
-	<main id="main-content">
+<NuxtLayout>
+	<!-- error.vue 不参与 pages 的插槽转译，需要显式注册布局插槽。 -->
+	<LayoutSlotsForward>
+		<template #aside>
+			<WidgetBlogLog />
+		</template>
+
 		<div class="app-error">
 			<ZError
 				:code="error.stack"
@@ -28,15 +27,11 @@ layoutStore.setAside(['blog-log'])
 				</template>
 			</ZError>
 		</div>
-		<BlogFooter />
-	</main>
-	<BlogAside />
-</div>
-<BlogPanel />
-<BikariyaModals />
+	</LayoutSlotsForward>
+</NuxtLayout>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .app-error {
 	margin: 1rem;
 }
