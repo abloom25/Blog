@@ -18,8 +18,8 @@ const { copy, copied } = useCopy(shareText)
 </script>
 
 <template>
-<div class="post-header" :class="{ 'has-cover': image }" :data-transition-key="path" data-transition-enter>
-	<Pic v-if="image" class="post-cover" :src="image" :alt="title" :filter="coverFilter" />
+<div id="post-header" class="post-header" :class="{ 'has-cover': image }" :data-transition-key="path" data-transition-enter>
+	<PostCover v-if="image" class="post-cover" :src="image" :alt="title" :filter="coverFilter" eager zoom banner />
 	<div class="post-nav">
 		<div class="operations">
 			<Icon v-show="false" name="tabler:check" />
@@ -72,105 +72,115 @@ const { copy, copied } = useCopy(shareText)
 
 <style scoped>
 .post-header {
-	contain: paint; /* overflow hidden + position relative */
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
-	gap: 1rem;
-	margin: 0.5rem;
-	border-radius: 1rem;
-	background-color: var(--c-bg-2);
+	justify-content: center;
+	gap: 1.5rem;
+	position: relative;
+	min-height: 12rem;
+	margin: 1rem;
 	color: var(--c-text);
+	isolation: isolate;
 
 	@media (max-width: 768px) {
-		margin: 0;
-		border-radius: 0;
-	}
-
-	&:hover .operations,
-	&:focus-within .operations {
-		opacity: 1;
+		margin: 0.75rem 1rem;
 	}
 
 	&.has-cover {
-		min-height: 16rem;
-		max-height: 20rem;
-		color: white;
-		transition: font-size 0.2s;
+		container-type: inline-size;
+		justify-content: center;
+		gap: 1.25rem;
+		overflow: clip;
+		min-width: 0;
+		min-height: 0;
+		aspect-ratio: 3.38;
+		padding: 2rem clamp(1.5rem, 3vw, 3rem);
 
-		.post-info {
-			filter: drop-shadow(0 1px 2px #000);
+		.post-title { font-size: clamp(1.4rem, 3.5cqw, 3.5rem); }
+		.post-subtitle { color: var(--c-text-2); }
+		.post-heading, .post-nav { width: 46%; }
+		.post-nav {
+			flex-direction: column;
+			gap: 1rem;
 		}
-
-		.post-heading {
-			background-image: linear-gradient(transparent, #0003, #0005);
-			text-shadow: var(--text-shadow-black);
-
-			&.is-story {
-				text-align: center;
-			}
-		}
-
-		.post-subtitle {
-			color: inherit;
-		}
+		.post-nav, .post-title, .post-subtitle { padding-inline: 0; }
+		.operations { color: var(--c-text-2); }
 	}
 }
 
 .operations {
-	position: absolute;
-	opacity: 0;
-	inset-inline-end: 1em;
-	color: var(--c-text-1);
-	transition: opacity 0.2s;
-	z-index: 1;
+	color: var(--c-text-2);
+
+	:deep(.z-button) {
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		background: none;
+	}
 }
 
 .post-cover {
 	position: absolute;
 	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	mask-composite: intersect;
+	mask-image:
+		linear-gradient(to right, transparent, #0000000D 20%, #00000033 40%, #000000B3 58%, #000 75%),
+		linear-gradient(to bottom, #000 65%, transparent);
+	z-index: -2;
 
-	> :deep(img) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+	:root.light & {
+		mask-image:
+			linear-gradient(to right, transparent 10%, #0000000D 35%, #00000033 48%, #000000B3 65%, #000 80%),
+			linear-gradient(to bottom, #000 65%, transparent);
 	}
 }
 
 .post-heading {
 	z-index: 1;
 
+	&.is-story .post-title {
+		font-family: var(--font-display);
+	}
+
 	&.has-subtitle {
 		.post-title {
 			padding-bottom: 0.4em;
-		}
-
-		&.is-story {
-			padding-block: 0.5rem;
-			text-align: center;
 		}
 	}
 }
 
 .post-title {
-	padding: 0.8em 1rem;
-	font-size: 1.6em;
-	line-height: 1.2;
+	padding: 0 1.5rem 0.5rem;
+	font-size: clamp(1.8rem, 3.6vw, 2.75rem);
+	font-weight: 600;
+	letter-spacing: -0.035em;
+	line-height: 1.45;
 	text-wrap: balance;
 }
 
 .post-subtitle {
 	margin: 0;
-	padding: 0 1rem 1.5rem;
-	font-size: 0.95rem;
-	line-height: 1.7;
+	padding: 0 1.5rem;
+	font-size: 0.85rem;
+	line-height: 1.9;
 	text-wrap: balance;
 	color: var(--c-text-2);
 }
 
 .post-nav {
-	padding: 0.8em 1rem;
-	font-size: 0.8em;
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1.5rem;
+	position: relative;
+	padding: 0 1.5rem;
+	font-size: 0.73em;
+	line-height: 1.8;
+	z-index: 1;
 
 	.post-info {
 		display: flex;
@@ -178,5 +188,35 @@ const { copy, copied } = useCopy(shareText)
 		gap: 0.5em 1.2em;
 		column-gap: clamp(1em, 3%, 1.5em);
 	}
+}
+
+@media (max-width: 768px) {
+	.post-header.has-cover {
+		gap: 1rem;
+		min-height: 0;
+		aspect-ratio: auto;
+		padding: calc(100% / 3.38 + 1.5rem) 1.5rem 1.5rem;
+		text-shadow: none;
+		color: var(--c-text);
+
+		&::before { display: none; }
+		.post-cover {
+			bottom: auto;
+			height: auto;
+			aspect-ratio: 3.38;
+		}
+		.post-title { font-size: 1.8rem; }
+		.post-heading, .post-nav { width: 100%; }
+		.post-nav { flex-direction: row-reverse; }
+		.post-subtitle, .operations { color: var(--c-text-2); }
+	}
+
+	.post-nav, .post-title, .post-subtitle { padding-inline: 0; }
+	.post-nav {
+		flex-direction: row-reverse;
+		align-items: start;
+		justify-content: space-between;
+	}
+	.operations { flex-shrink: 0; }
 }
 </style>

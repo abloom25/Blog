@@ -30,7 +30,7 @@ if (import.meta.dev) {
 </script>
 
 <template>
-<div class="md-excerpt gradient-card">
+<div class="md-excerpt">
 	<span class="dynamic"><Icon name="tabler:sparkles-2" />{{ excerpt }}{{ caret }}</span>
 	<span class="static"><Icon name="tabler:sparkles-2" />{{ props.excerpt }}</span>
 </div>
@@ -38,11 +38,11 @@ if (import.meta.dev) {
 
 <style scoped>
 .md-excerpt {
-	opacity: 0.6;
+	position: relative;
 	margin: 1rem 0.5rem;
 	padding: 0.5rem;
 	font-size: 0.9em;
-	transition: opacity 0.2s;
+	color: var(--c-text-2);
 
 	> .static {
 		opacity: 0;
@@ -59,8 +59,15 @@ if (import.meta.dev) {
 		margin-inline-end: 0.3em;
 	}
 
-	&:hover {
-		opacity: 1;
+	&.cover-excerpt {
+		margin: 0;
+		padding: 1.25rem clamp(1.5rem, 3vw, 3rem);
+		border-radius: 0;
+
+		> .dynamic {
+			inset-inline: clamp(1.5rem, 3vw, 3rem);
+			width: auto;
+		}
 	}
 }
 </style>

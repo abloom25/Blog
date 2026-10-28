@@ -62,13 +62,13 @@ defineExpose({ body })
 	}
 
 	&.dim {
-		opacity: 0.3;
-		transition: opacity 0.2s;
+		color: var(--c-text-2);
+		transition: color 0.2s;
 
 		#blog-aside:hover &,
 		&:focus-within,
 		#blog-aside.show & {
-			opacity: 1;
+			color: var(--c-text-1);
 		}
 	}
 }
@@ -123,9 +123,8 @@ defineExpose({ body })
 	}
 
 	&.widget-card {
-		padding: 0.5rem 0.8rem;
+		padding: 0.35rem 0.5rem;
 		border-radius: 0.8rem;
-		background-color: var(--c-bg-2);
 
 		:deep(p) {
 			padding: 0.2em 0;

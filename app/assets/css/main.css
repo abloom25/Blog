@@ -23,6 +23,7 @@
 	scrollbar-color: var(--c-text-3) transparent;
 	font-variant-alternates: styleset(open-digits, disambiguation, round-quotes-and-commas);
 	-webkit-tap-highlight-color: var(--c-primary-soft);
+	-webkit-font-smoothing: antialiased;
 
 	&:dir(rtl) {
 		--start: right;
@@ -30,6 +31,24 @@
 		--transform-start-far: translateX(100%);
 		--transform-end-far: translateX(-100%);
 	}
+}
+
+/* Static light fields echo Homepage's dusk palette without a continuously animated backdrop. */
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	background:
+		radial-gradient(ellipse at 0% 0%, var(--c-ambient-rose), transparent 55%),
+		radial-gradient(ellipse at 90% 10%, var(--c-ambient-lilac), transparent 55%),
+		radial-gradient(ellipse at 70% 70%, var(--c-ambient-mint), transparent 55%);
+	pointer-events: none;
+	z-index: -1;
+}
+
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+	outline: 2px solid var(--c-primary);
+	outline-offset: 5px;
 }
 
 * {
@@ -151,7 +170,8 @@ img {
 	padding: 0.3em 0.6em;
 	border-radius: 0.5em;
 	box-shadow: var(--box-shadow-3);
-	background-color: var(--ld-bg-card);
+	background-color: var(--c-bg-a80);
+	backdrop-filter: blur(16px);
 	font-size: 0.8rem;
 	line-height: 1.4;
 	color: var(--c-text-2);
@@ -162,7 +182,7 @@ img {
 	}
 
 	> .tippy-svg-arrow {
-		fill: var(--ld-bg-card);
+		fill: var(--c-bg-a80);
 		pointer-events: none;
 	}
 }

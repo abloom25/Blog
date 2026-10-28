@@ -51,9 +51,9 @@ details {
 			content: "展开";
 			float: right;
 			float: inline-end;
-			opacity: 0.5;
 			margin-inline-start: 0.5em;
 			font-weight: normal;
+			color: var(--c-text-2);
 			transition: color 0.2s;
 		}
 

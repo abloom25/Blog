@@ -141,8 +141,8 @@ function getInspectStyle(src: string): CSSProperties {
 	}
 
 	.sitenick {
-		opacity: 0.4;
 		font-size: 0.8em;
+		color: var(--c-text-2);
 	}
 
 	.no-feed {

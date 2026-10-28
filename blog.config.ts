@@ -4,8 +4,7 @@ const basicConfig = {
 	title: '唤青映记',
 	subtitle: 'Per aspera ad astra',
 	// 长 description 利好于 SEO
-	// TODO
-	description: '',
+	description: '随性而起，尚真而记。记录日常、游戏与创造中的片刻，让想法和生活的余响留在这里。',
 	author: {
 		name: 'Abloom | 唤青',
 		avatar: 'https://avatars.githubusercontent.com/u/161844018?v=4',

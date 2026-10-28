@@ -67,6 +67,7 @@ const title = computed(() => props.title || typeMap[props.type].title)
 	border-radius: 0.5em;
 	background-color: var(--c-bg-2);
 	font-size: 0.9em;
+	color: var(--c-text-1);
 
 	@supports (color: color-mix(in srgb, transparent, transparent)) {
 		--c-primary-soft: color-mix(in srgb, var(--c-primary) 15%, transparent);
@@ -86,7 +87,11 @@ const title = computed(() => props.title || typeMap[props.type].title)
 		gap: 0.5em;
 		margin: 0.5em 0;
 		font-weight: bold;
-		color: var(--c-primary);
+		color: var(--c-text);
+
+		> .iconify {
+			color: var(--c-primary);
+		}
 
 		:deep(p) {
 			margin: 0;

@@ -7,9 +7,16 @@ const [DefineTemplate, ReuseTemplate] = createReusableTemplate({
 	},
 })
 
-const { toc } = useArticle()
+const { post, toc } = useArticle()
 const scrollableEl = useTemplateRef('toc')
-const { tocOffsets, activeHeadingId } = useToc(toc, computed(() => scrollableEl.value?.body))
+const { activeHeadingId } = useToc(toc, computed(() => scrollableEl.value?.body))
+// 根据内容树计数，避免服务端无 DOM 时与客户端测量结果不一致。
+const headingCount = computed(() => countHeadings(toc.value?.links))
+const beginningAnchor = computed(() => post.value?.image ? '#post-header' : '#main-content')
+
+function countHeadings(tocTree: TocLink[] = []): number {
+	return tocTree.reduce((count, entry) => count + 1 + countHeadings(entry.children), 0)
+}
 
 function hasHeading(tocTree: TocLink, heading?: string): boolean {
 	return tocTree.id === heading || !!tocTree.children?.some(child => hasHeading(child, heading))
@@ -21,11 +28,11 @@ function hasHeading(tocTree: TocLink, heading?: string): boolean {
 	ref="toc"
 	title="文章目录"
 	shrink
-	:style="{ minHeight: `clamp(4rem, ${tocOffsets.length}rem, 20rem)` }"
+	:style="{ minHeight: `clamp(4rem, ${headingCount}rem, 20rem)` }"
 >
 	<template #action>
 		<!-- use <a> for anchor -->
-		<a href="#main-content" aria-label="返回开头">
+		<a :href="beginningAnchor" aria-label="返回开头">
 			<Icon name="tabler:arrow-bar-to-up" />
 		</a>
 
@@ -82,18 +89,18 @@ ol {
 }
 
 li {
-	opacity: 0.6;
 	font-size: 0.94em;
-	color: var(--c-text);
-	transition: opacity 0.2s;
-
-	&:hover {
-		opacity: 0.94;
-	}
 
 	&.has-active, &.active {
-		opacity: 1;
 		font-size: 1em;
+	}
+
+	&.has-active > a {
+		color: var(--c-text);
+	}
+
+	&.active > a {
+		color: var(--c-primary);
 	}
 
 	&.active::before {
@@ -113,10 +120,13 @@ li {
 		border-radius: 0.5em;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		transition: all 0.2s;
+		color: var(--c-text-2);
+		transition: color 0.2s, background-color 0.2s;
 
-		&:hover {
+		&:hover,
+		&:focus-visible {
 			background-color: var(--c-bg-soft);
+			color: var(--c-text);
 		}
 	}
 }
@@ -124,6 +134,6 @@ li {
 .no-toc {
 	padding: 1em;
 	text-align: center;
-	color: var(--c-text-3);
+	color: var(--c-text-2);
 }
 </style>

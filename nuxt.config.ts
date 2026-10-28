@@ -8,6 +8,9 @@ import { Temporal } from 'temporal-polyfill'
 import blogConfig from './blog.config'
 import packageJson from './package.json'
 import redirectList from './redirects.json'
+import { prepareCoverMedia } from './scripts/cover-media.mjs'
+
+await prepareCoverMedia()
 
 function pluginPath(path: string) {
 	return pathToFileURL(resolve(`./remark-plugins/${path}.ts`)).href
@@ -152,8 +155,8 @@ export default defineNuxtConfig({
 	],
 
 	colorMode: {
-		preference: 'system',
-		fallback: 'light',
+		preference: 'dark',
+		fallback: 'dark',
 		classSuffix: '',
 	},
 

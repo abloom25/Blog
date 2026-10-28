@@ -1,13 +1,13 @@
 .article {
 	margin: 1rem;
-	line-height: 1.8;
+	line-height: 1.95;
 
 	p {
 		margin: 0.5em 0;
 	}
 
 	> *, > p {
-		margin: 1rem 0;
+		margin: 1.25rem 0;
 	}
 
 	:target {
@@ -16,7 +16,7 @@
 	}
 
 	> :where(h1, h2, h3, h4, h5, h6) {
-		margin: 1.6em 0 0.8em;
+		margin: 2em 0 0.9em;
 		font-family: var(--font-creative);
 		font-weight: 550;
 		-webkit-font-smoothing: antialiased;
@@ -54,14 +54,14 @@
 	}
 
 	blockquote {
-		padding: 0.2rem 0.8rem;
-		border-inline-start: 4px solid var(--c-border);
-		border-radius: 4px;
-		background-color: var(--c-bg-2);
+		padding: 0.4rem 1rem;
+		border-inline-start: 2px solid var(--c-primary);
+		border-radius: 0 12px 12px 0;
+		background-color: var(--c-surface);
 		font-size: 0.9rem;
 
 		> .z-codeblock {
-			margin: 0 -0.8rem;
+			margin: 0 -1rem;
 		}
 	}
 
@@ -78,13 +78,13 @@
 		&:not([class]), &.image {
 			display: block;
 			margin: 1rem auto;
-			border-radius: 0.5rem;
+			border-radius: 1rem;
 		}
 	}
 
 	hr {
 		margin: 3em 0;
-		border-top: 0.4em dashed var(--c-border);
+		border-top: 1px solid var(--c-border);
 	}
 
 	strong {
@@ -92,7 +92,7 @@
 	}
 
 	del {
-		opacity: 0.5;
+		color: var(--c-text-2);
 	}
 
 	&.md-tech > h2 > a::before {

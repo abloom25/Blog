@@ -1,0 +1,52 @@
+{
+  "recipe": "homepage-edges-v4-light-ambience",
+  "entries": {
+    "https://cdn.jsdelivr.net/gh/abloom25/picx-images-hosting@master/exec-71368260-c4ee-4ea5-b1b5-5ad6aa762d6e.53c4d5.webp": {
+      "recipe": "homepage-edges-v4-light-ambience",
+      "stamp": "https://cdn.jsdelivr.net/gh/abloom25/picx-images-hosting@master/exec-71368260-c4ee-4ea5-b1b5-5ad6aa762d6e.53c4d5.webp",
+      "options": {
+        "sample": null,
+        "transition": null,
+        "focusX": 0.68,
+        "focusY": 0.5
+      },
+      "source": "source-3e6e509a3d789a59.webp"
+    },
+    "https://github.com/abloom25/picx-images-hosting/blob/master/4621baa2b00dc8d367706cf56724877a.jpg?raw=true": {
+      "retryAfter": 1793185691136
+    },
+    "https://github.com/abloom25/picx-images-hosting/raw/master/blog.6t7q23e57l.webp": {
+      "recipe": "homepage-edges-v4-light-ambience",
+      "stamp": "https://github.com/abloom25/picx-images-hosting/raw/master/blog.6t7q23e57l.webp",
+      "options": {
+        "sample": null,
+        "transition": null,
+        "focusX": 0.5,
+        "focusY": 0.5
+      },
+      "source": "source-9e61a44b3f713218.webp"
+    },
+    "https://github.com/abloom25/picx-images-hosting/raw/master/C9A0063A-CFBA-4F31-B963-57F18DE5BF3A(20260426-180.7lkljsuvfx.webp": {
+      "recipe": "homepage-edges-v4-light-ambience",
+      "stamp": "https://github.com/abloom25/picx-images-hosting/raw/master/C9A0063A-CFBA-4F31-B963-57F18DE5BF3A(20260426-180.7lkljsuvfx.webp",
+      "options": {
+        "sample": null,
+        "transition": null,
+        "focusX": 0.5,
+        "focusY": 0.5
+      },
+      "source": "source-97f5d7af8e7ad2e8.webp"
+    },
+    "https://github.com/NightlightAI/.github/blob/main/profile/assets/Sign.png?raw=true": {
+      "recipe": "homepage-edges-v4-light-ambience",
+      "stamp": "https://github.com/NightlightAI/.github/blob/main/profile/assets/Sign.png?raw=true",
+      "options": {
+        "sample": null,
+        "transition": null,
+        "focusX": 0.5,
+        "focusY": 0.5
+      },
+      "source": "source-6a9d028e2e4fef47.webp"
+    }
+  }
+}

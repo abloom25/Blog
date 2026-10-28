@@ -48,8 +48,8 @@ function render() {
 
 :deep() {
 	> .timeline-caption {
-		opacity: 0.8;
 		font-size: 0.9em;
+		color: var(--c-text-2);
 
 		&::before {
 			content: "";

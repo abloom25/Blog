@@ -711,9 +711,7 @@ function handleLoadedMetadata() {
 	gap: 0.55em;
 	min-width: 0;
 	padding: 0.45em 0.55em;
-	border: 1px solid var(--c-border);
 	border-radius: 1rem;
-	background-color: var(--c-bg-2);
 	text-align: start;
 }
 
@@ -781,10 +779,10 @@ function handleLoadedMetadata() {
 	-webkit-box-orient: vertical;
 
 	> span {
-		transition: color 0.15s, opacity 0.15s;
+		transition: color 0.15s;
 
 		&:not(.active) {
-			opacity: 0.45;
+			color: var(--c-text-2);
 		}
 
 		&.active {

@@ -154,8 +154,8 @@ figcaption {
 	}
 
 	> .language {
-		opacity: 0.4;
 		height: 0;
+		color: var(--c-text-2);
 		transform: translateY(0.2em);
 	}
 
@@ -173,12 +173,13 @@ figcaption {
 		}
 
 		> button {
-			opacity: 0.4;
 			padding: 0.2em 0.4em;
-			transition: opacity 0.2s;
+			color: var(--c-text-2);
+			transition: color 0.2s;
 
-			&:hover {
-				opacity: 1;
+			&:hover,
+			&:focus-visible {
+				color: var(--c-text);
 			}
 		}
 	}
@@ -269,14 +270,16 @@ pre {
 .toggle-btn {
 	display: block;
 	position: relative; /* 移动到 pre 上方 */
-	opacity: 0.3;
 	width: 100%;
 	padding: 0.2em;
-	background-color: var(--c-bg-3);
-	transition: opacity 0.2s;
+	background-color: var(--c-bg-soft);
+	color: var(--c-text-2);
+	transition: background-color 0.2s, color 0.2s;
 
-	&:hover {
-		opacity: 1;
+	&:hover,
+	&:focus-visible {
+		background-color: var(--c-bg-2);
+		color: var(--c-text);
 	}
 }
 

@@ -9,32 +9,17 @@ const appConfig = useAppConfig()
 
 <template>
 <UtilLink class="blog-header">
-	<div v-if="appConfig.header.emojiTail" class="emoji-tail">
-		<span
-			v-for="(emoji, emojiIndex) in appConfig.header.emojiTail"
-			:key="emojiIndex"
-			class="split-char"
-			:style="getFixedDelay(emojiIndex * .6 - 3)"
-			v-text="emoji"
-		/>
-	</div>
-
 	<NuxtImg
 		:src="appConfig.header.logo"
-		class="blog-logo round-cobblestone"
-		:class="{ circle: appConfig.header.showTitle }"
+		class="blog-logo"
 		:alt="appConfig.title"
+		width="64"
+		height="64"
 	/>
 
 	<div v-if="appConfig.header.showTitle" class="blog-text">
 		<component :is="tag" class="header-title">
-			<span
-				v-for="(char, charIndex) in appConfig.title"
-				:key="charIndex"
-				class="split-char"
-				:style="getFixedDelay((charIndex + 1) * .1)"
-				v-text="char"
-			/>
+			{{ appConfig.title }}
 		</component>
 
 		<div class="header-subtitle">
@@ -46,101 +31,77 @@ const appConfig = useAppConfig()
 
 <style scoped>
 .blog-header {
-	contain: layout;
 	display: flex;
 	align-items: center;
-	gap: 0.5em;
-	position: relative;
-	margin: clamp(1rem, 2rem, 5vh) 1rem min(1rem, 5vh);
+	gap: 1rem;
+	margin: 1.5rem 0;
 	line-height: 1.4;
 	color: var(--c-text);
 	user-select: none;
+
+	&:focus-visible {
+		border-radius: 8px;
+		outline: 2px solid var(--c-primary);
+		outline-offset: 8px;
+	}
 }
 
 .blog-logo {
-	height: 3em;
-
-	&.circle {
-		width: 3em;
-		border-radius: 50%;
-		box-shadow: var(--box-shadow-1), var(--box-shadow-3);
-	}
+	flex: 0 0 auto;
+	width: 48px;
+	height: 48px;
+	border: 1px solid var(--c-border);
+	border-radius: 50%;
+	box-shadow: 0 8px 32px color-mix(in srgb, var(--c-accent) 12%, transparent);
+	transition: transform 0.35s var(--motion-easing, ease);
+	object-fit: cover;
 }
 
-@font-face {
-	font-family: AlimamaFangYuanTi;
-	src: url("/fonts/AlimamaFangYuanTi.woff2");
+.blog-text {
+	min-width: 0;
 }
 
 .header-title {
-	font-family: AlimamaFangYuanTi, "Noto Sans SC", sans-serif;
-	font-size: 1.5em;
-	font-synthesis: none;
-	font-variation-settings: "wght" 600, "BEVL" 100;
-
-	> .split-char {
-		animation: 3.14s infinite alternate vf-weight, 2.72s infinite alternate vf-bevel;
-		animation-delay: var(--delay);
-		animation-play-state: paused;
-	}
+	font-family: var(--font-display, Georgia, serif);
+	font-size: 1.6rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
 }
 
 .header-subtitle {
-	opacity: 0.5;
-	font-size: 0.75em;
+	margin-top: 0.5rem;
+	font-family: Georgia, serif;
+	font-size: 0.75rem;
+	font-style: italic;
+	letter-spacing: 0.03em;
+	color: var(--c-text-3);
 }
 
-@keyframes vf-weight {
-	0% { font-weight: 600; }
-	38.2% { font-weight: 300; }
-	100% { font-weight: 900; }
-}
+.sidebar-header {
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1.2rem;
+	margin: 0 0 1.7rem;
 
-@keyframes vf-bevel {
-	from { font-variation-settings: "BEVL" 100; }
-	to { font-variation-settings: "BEVL" 1; }
-}
+	.blog-logo {
+		width: 64px;
+		height: 64px;
+	}
 
-.emoji-tail {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-	align-content: center;
-	justify-items: center;
-	position: absolute;
-	opacity: 0.2;
-	inset: 0;
-	font-size: 4rem;
-	transition: opacity 1s;
-	filter: blur(2px);
-	pointer-events: none;
-	z-index: -2;
-
-	> .split-char {
-		animation: 5s infinite alternate emoji-floating;
-		animation-delay: var(--delay);
-		animation-play-state: paused;
+	.header-title {
+		font-size: 2rem;
 	}
 }
 
-.blog-header:hover {
-	.emoji-tail {
-		opacity: 0.5;
-	}
-
-	.split-char {
-		animation-play-state: running;
+@media (hover: hover) and (pointer: fine) {
+	.blog-header:hover .blog-logo {
+		transform: translateY(-2px);
 	}
 }
 
-@keyframes emoji-floating {
-	50% {
-		transform: translate(-12px, -4px) scale(1.2);
-		filter: blur(4px);
-	}
-
-	100% {
-		transform: translate(-4px, -12px) scale(0.9);
-		filter: blur(1px);
+@media (prefers-reduced-motion: reduce) {
+	.blog-logo {
+		transition: none;
 	}
 }
 </style>

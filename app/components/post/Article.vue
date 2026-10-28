@@ -7,10 +7,12 @@ const showAllDate = isTimeDiffSignificant(props.date, props.updated)
 </script>
 
 <template>
-<UtilLink class="article-card card upraise" :data-transition-key="path" data-transition-enter>
-	<NuxtImg v-if="image" class="article-cover" :src="image" :alt="title" />
+<UtilLink class="article-card" :class="{ 'with-cover': image }" :data-transition-key="path" data-transition-enter>
+	<div v-if="image" class="article-cover" aria-hidden="true">
+		<PostCover :src="image" banner />
+	</div>
 	<article>
-		<h2 class="article-title text-creative">
+		<h2 class="article-title">
 			{{ title }}
 		</h2>
 
@@ -32,7 +34,7 @@ const showAllDate = isTimeDiffSignificant(props.date, props.updated)
 				icon="tabler:clock-edit"
 			/>
 
-			<span v-if="categories" :style="{ color: getCategoryColor(categories[0]) }">
+			<span v-if="categories" class="article-category" :style="{ '--category-color': getCategoryColor(categories[0]) }">
 				<Icon :name="getCategoryIcon(categories[0])" />
 				{{ categories[0] }}
 			</span>
@@ -49,24 +51,42 @@ const showAllDate = isTimeDiffSignificant(props.date, props.updated)
 <style scoped>
 .article-card {
 	container-type: inline-size;
+	display: block;
 	position: relative;
+	overflow: clip;
 	margin: 1em 0;
 	border-radius: 0.8em;
 	color: var(--c-text);
-	animation: float-in var(--motion-duration) var(--motion-easing) var(--delay, 0s) backwards;
+	isolation: isolate;
+
+	&:hover,
+	&:focus-visible {
+		.article-title {
+			color: var(--c-primary);
+		}
+
+		.article-cover {
+			opacity: 1;
+		}
+	}
 
 	> article {
 		display: grid;
 		gap: 0.5em;
+		position: relative;
 		padding: 1em;
 	}
+
+	&.with-cover > article { width: 60%; }
 }
 
 .article-info {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5em clamp(1em, 5%, 1.5em);
-	font-size: 0.8em;
+	gap: 0.5em clamp(0.8em, 4%, 1.4em);
+	margin-top: 0.25rem;
+	font-size: 0.73em;
+	line-height: 1.7;
 	color: var(--c-text-2);
 
 	&:empty {
@@ -76,77 +96,95 @@ const showAllDate = isTimeDiffSignificant(props.date, props.updated)
 	.use-updated {
 		order: -1;
 	}
+
+	.article-category {
+		color: color-mix(in oklab, var(--category-color, var(--c-text-2)) 62%, var(--c-text));
+	}
 }
 
 .article-title {
-	font-size: 1.2em;
+	display: -webkit-box;
+	overflow: hidden;
+	font-family: var(--font-creative);
+	font-size: 1.2rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	-webkit-line-clamp: 2;
+	line-height: 1.5;
+	text-wrap: pretty;
 	color: var(--c-text);
+	transition: color 0.28s;
+	-webkit-box-orient: vertical;
 }
 
 .article-description {
-	font-size: 0.9em;
+	display: -webkit-box;
+	align-self: start;
+	overflow: hidden;
+	font-size: 0.87em;
+	-webkit-line-clamp: 3;
+	line-height: 1.85;
 	color: var(--c-text-2);
+	-webkit-box-orient: vertical;
 }
 
 .article-cover {
 	position: absolute;
-	opacity: 0.8;
-	inset-inline-end: 0;
-	top: 0;
-	width: calc(40% + 2em);
+	opacity: 0.9;
+	inset: 0;
+	width: 100%;
 	height: 100%;
 	margin: 0;
-	mask-image: linear-gradient(to var(--end), transparent, #FFF 50%);
-	transition: opacity 0.2s;
-	object-fit: cover;
+	mask-image: linear-gradient(to right, transparent 8%, #0000000A 30%, #00000026 45%, #00000099 62%, #000 80%);
+	transition: opacity 0.35s;
+	pointer-events: none;
+	z-index: -1;
 
-	:hover > & {
-		opacity: 1;
-	}
-
-	& + article {
-		position: relative;
-		width: 60%;
-	}
-
-	@media (max-width: 528px) {
-		position: revert;
+	> :deep(.cover-artwork) {
 		width: 100%;
-		height: auto;
-		max-width: none;
-		max-height: 256px;
-		aspect-ratio: 2.4;
-		margin-bottom: -10%;
-		mask-image: linear-gradient(#FFF 50%, transparent);
+		height: 100%;
+	}
 
-		& + article {
-			width: auto;
-
-			> .article-title {
-				text-shadow: 0 0 0.2em var(--ld-bg-card), 0 0 0.5em var(--ld-bg-card), 0 0 1em var(--ld-bg-card);
-			}
-		}
+	:root.light & {
+		mask-image: linear-gradient(to right, transparent 30%, #00000005 55%, #00000033 64%, #000000B3 76%, #000 88%);
 	}
 }
 
 @container (max-width: 528px) {
 	.article-cover {
-		position: revert;
-		width: 100%;
+		position: relative;
 		height: auto;
-		max-width: none;
-		max-height: 256px;
 		aspect-ratio: 2.4;
 		margin-bottom: -10%;
-		mask-image: linear-gradient(#FFF 50%, transparent);
+		mask-image: linear-gradient(#000 50%, transparent);
 
-		& + article {
-			width: auto;
+		:root.light & { mask-image: linear-gradient(#000 50%, transparent); }
 
-			> .article-title {
-				text-shadow: 0 0 0.2em var(--ld-bg-card), 0 0 0.5em var(--ld-bg-card), 0 0 1em var(--ld-bg-card);
-			}
+		> :deep(.cover-artwork) {
+			position: absolute;
+			inset: 0;
 		}
+	}
+
+	.article-card.with-cover > article,
+	.article-card > article {
+		width: 100%;
+		padding: 1em;
+	}
+
+	.article-title {
+		font-size: 1.2rem;
+	}
+
+	.article-description {
+		-webkit-line-clamp: 2;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.article-title,
+	.article-cover {
+		transition: none;
 	}
 }
 </style>

@@ -21,7 +21,7 @@ const icon = computed(() => props.icon || 'tabler:message-2')
 .quote {
 	font-size: 1.2rem;
 	line-height: 1.5;
-	color: var(--c-text-2);
+	color: var(--c-text-1);
 	isolation: isolate;
 
 	:deep(p) {

@@ -80,10 +80,7 @@ if (import.meta.client) {
 	display: flex;
 	max-width: calc(100vw);
 	margin: 1rem auto;
-	border: 1px solid var(--c-border);
-	border-radius: 0.5rem;
-	box-shadow: var(--box-shadow-1);
-	background-color: var(--ld-bg-card);
+	border-radius: 0.75rem;
 	transition: max-width 0.2s var(--max-bezier-to-full);
 	font-variant-numeric: tabular-nums;
 
@@ -111,22 +108,22 @@ if (import.meta.client) {
 
 	> .pagination-button {
 		border: none;
-		border-radius: 0;
+		border-radius: 0.75rem;
 		box-shadow: none;
+		background-color: transparent;
 
 		&:first-child {
 			margin-inline-end: auto;
-			border-radius: 0.5rem 0 0 0.5rem;
 		}
 
 		&:last-child {
 			margin-inline-start: auto;
-			border-radius: 0 0.5rem 0.5rem 0;
 		}
 	}
 
 	> .pagination-num {
 		width: 3em;
+		border-radius: 50%;
 		transition: background-color 0.2s;
 
 		&:hover { background-color: var(--c-border); }
@@ -134,7 +131,8 @@ if (import.meta.client) {
 		&:disabled { pointer-events: none; }
 
 		&.active {
-			background-color: var(--c-primary-soft);
+			background-color: transparent;
+			font-weight: 600;
 			color: var(--c-primary);
 		}
 	}

@@ -57,7 +57,6 @@ const tip = computed(() => {
 	@supports (color: color-mix(in srgb, transparent, transparent)) {
 		border-color: color-mix(in srgb, currentcolor 10%, transparent);
 		background-color: color-mix(in srgb, currentcolor 5%, transparent);
-		color: color-mix(in srgb, currentcolor 80%, transparent);
 	}
 
 	&[href]:hover {

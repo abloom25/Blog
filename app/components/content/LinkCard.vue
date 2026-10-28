@@ -56,11 +56,11 @@ defineProps<{
 	/* 内部需要是块元素 */
 	.link-card-description {
 		overflow: hidden;
-		opacity: 0.5;
 		margin-top: 0.2em;
 		font-size: 0.9em;
 		white-space: nowrap;
 		text-overflow: ellipsis;
+		color: var(--c-text-2);
 	}
 
 	.link-card-icon {

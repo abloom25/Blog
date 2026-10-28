@@ -38,16 +38,16 @@ withDefaults(defineProps<Partial<SearchItem>>(), {
 }
 
 .title:not(:first-child) {
-	opacity: 0.5;
-	transition: opacity 0.2s;
+	color: var(--c-text-2);
+	transition: color 0.2s;
 
 	.active & {
-		opacity: 1;
+		color: var(--c-text);
 	}
 
 	&::before {
 		content: " > ";
-		opacity: 0.5;
+		color: var(--c-text-3);
 	}
 }
 

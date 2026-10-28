@@ -333,6 +333,9 @@ catalogs:
     rimraf:
       specifier: ^6.1.3
       version: 6.1.3
+    sharp:
+      specifier: 0.35.4
+      version: 0.35.4
     site-config-stack:
       specifier: ^4.2.3
       version: 4.2.3
@@ -342,6 +345,9 @@ catalogs:
     temporal-polyfill:
       specifier: ^1.0.4
       version: 1.0.4
+    yaml:
+      specifier: 2.9.0
+      version: 2.9.0
 
 patchedDependencies:
   '@nuxt/image': 579706651997597c070d331e56e6cf9f3deb05477e3696c678c5c49ff614ea9c
@@ -376,7 +382,7 @@ importers:
         version: 4.0.1(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.143.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0)))
       '@nuxtjs/seo':
         specifier: catalog:content
-        version: 5.3.14(858343819437468ea50a5b3d7645ee64)
+        version: 5.3.14(3881bba9d92e4bd02cf12a493a594cf8)
       '@pinia/nuxt':
         specifier: catalog:util
         version: 1.0.2(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.143.0)(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0)))
@@ -516,6 +522,9 @@ importers:
       rimraf:
         specifier: catalog:util
         version: 6.1.3
+      sharp:
+        specifier: catalog:util
+        version: 0.35.4(@types/node@26.4.1)
       strip-ansi:
         specifier: catalog:util
         version: 7.2.0
@@ -528,6 +537,9 @@ importers:
       unrun:
         specifier: catalog:framework
         version: 0.3.1(synckit@0.11.13)
+      yaml:
+        specifier: catalog:util
+        version: 2.9.0
 
 packages:
 
@@ -8997,8 +9009,7 @@ snapshots:
       '@iconify/types': 2.0.0
       vue: 3.5.42(typescript@6.0.3)
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.35.4':
     optionalDependencies:
@@ -9908,14 +9919,14 @@ snapshots:
       - vite
       - vue
 
-  '@nuxtjs/seo@5.3.14(858343819437468ea50a5b3d7645ee64)':
+  '@nuxtjs/seo@5.3.14(3881bba9d92e4bd02cf12a493a594cf8)':
     dependencies:
       '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.143.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0)))
       '@nuxtjs/robots': 6.2.0(1a602266f745e7bd723ce3985eb1e7ac)
       '@nuxtjs/sitemap': 8.5.0(1a602266f745e7bd723ce3985eb1e7ac)
       nuxt: 4.5.2(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7(supports-color@10.2.2)))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7(supports-color@10.2.2)))(@oxc-project/types@0.148.0)(@parcel/watcher@2.6.0)(@types/node@26.4.1)(@vue/compiler-sfc@3.5.42)(commander@15.0.0)(db0@0.3.4)(esbuild@0.28.2)(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(ioredis@5.11.1(supports-color@10.2.2))(lightningcss@1.33.0)(magicast@0.5.4)(meow@14.1.0)(optionator@0.9.4)(oxc-parser@0.143.0)(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(rolldown@1.2.7)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.7)(rollup@4.63.1))(rollup@4.63.1)(sass-embedded@1.104.0)(sass@1.104.0)(srvx@0.11.22)(stylelint@17.15.0(supports-color@10.2.2)(typescript@6.0.3))(supports-color@10.2.2)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(xml2js@0.6.2)(yaml@2.9.0)
       nuxt-link-checker: 5.3.0(ab81f646f9a7eb6eeca41e787cc30a94)
-      nuxt-og-image: 6.7.8(8298635c2ed09d8e373fcd34b156281c)
+      nuxt-og-image: 6.7.8(af01600e53db664ad311e9272e71a8af)
       nuxt-schema-org: 6.3.1(8153d35f55fbf1d20fb344a6ca93e83f)
       nuxt-seo-utils: 8.5.0(dca98ca10af856aceee765f19cbec11d)
       nuxt-site-config: 4.2.3(1a602266f745e7bd723ce3985eb1e7ac)
@@ -14555,7 +14566,7 @@ snapshots:
       - rolldown
       - unplugin
 
-  nuxt-og-image@6.7.8(8298635c2ed09d8e373fcd34b156281c):
+  nuxt-og-image@6.7.8(af01600e53db664ad311e9272e71a8af):
     dependencies:
       '@clack/prompts': 1.7.0
       '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.143.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0)))
@@ -14591,6 +14602,7 @@ snapshots:
       unstorage: 1.17.5(db0@0.3.4)(ioredis@5.11.1(supports-color@10.2.2))
     optionalDependencies:
       nitropack: 2.13.4(@parcel/watcher@2.6.0)(oxc-parser@0.143.0)(rolldown@1.2.7)(srvx@0.11.22)(supports-color@10.2.2)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass-embedded@1.104.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(xml2js@0.6.2)
+      sharp: 0.35.4(@types/node@26.4.1)
       zod: 4.5.4
     transitivePeerDependencies:
       - '@farmfe/core'
@@ -16037,7 +16049,6 @@ snapshots:
       '@img/sharp-win32-ia32': 0.35.4
       '@img/sharp-win32-x64': 0.35.4
       '@types/node': 26.4.1
-    optional: true
 
   shebang-command@2.0.0:
     dependencies:

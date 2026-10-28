@@ -145,6 +145,122 @@ onMounted(() => {
 
 :deep(#twikoo) {
 	margin: 2em 0;
+	color: var(--c-text-1);
+
+	/* Twikoo 的默认蓝色与 Element 表单颜色不跟随博客主题。 */
+	.tk-comments .tk-sort-item,
+	.tk-comments .tk-submit-action-icon,
+	.tk-comments .tk-icon.__comments {
+		color: var(--c-text-2);
+	}
+
+	.tk-comments .tk-sort-item:is(.__active, :hover, :focus),
+	.tk-comments .tk-submit-action-icon:hover,
+	.tk-comments .tk-action-link,
+	.tk-comments .tk-actions button,
+	.tk-comments .tk-nick-link:hover {
+		color: var(--c-primary);
+	}
+
+	.tk-comments .tk-action-link .tk-action-icon,
+	.tk-comments .tk-action-link .tk-action-icon-solid {
+		color: inherit;
+	}
+
+	.tk-comments .tk-icon.__comments.__active {
+		box-shadow: 0 0 0 0.2rem var(--c-primary-soft);
+		background-color: var(--c-primary-soft);
+		color: var(--c-primary);
+	}
+
+	.tk-comments :is(.tk-sort-item, .tk-action-link, .tk-actions button, .tk-submit-action-icon, .tk-icon.__comments):focus-visible {
+		border-radius: 0.25rem;
+		outline: 2px solid var(--c-primary);
+		outline-offset: 4px;
+	}
+
+	/* 只覆盖公共评论表单，保留管理员面板自己的深色配色。 */
+	.tk-comments {
+		.el-input__inner,
+		.el-textarea__inner {
+			border-color: var(--c-border);
+			background-color: var(--c-bg-2);
+			color: var(--c-text-1);
+
+			&::placeholder {
+				opacity: 1;
+				color: var(--c-text-2);
+			}
+
+			&:hover {
+				border-color: var(--c-text-3);
+			}
+
+			&:focus {
+				border-color: var(--c-primary);
+			}
+		}
+
+		.el-input-group__prepend,
+		.el-input-group__append {
+			border-color: var(--c-border);
+			background-color: var(--c-bg-soft);
+			color: var(--c-text-2);
+		}
+
+		.el-textarea .el-input__count {
+			background-color: transparent;
+			color: var(--c-text-2);
+		}
+
+		.tk-meta-input .el-input input:invalid {
+			border-color: var(--c-error);
+		}
+
+		.el-button {
+			border-color: var(--c-border);
+			background-color: var(--c-bg-2);
+			color: var(--c-text-2);
+
+			&.el-button--primary {
+				border-color: var(--c-primary-soft);
+				background-color: var(--c-primary-soft);
+				color: var(--c-primary);
+			}
+
+			&.el-button--text {
+				border-color: transparent;
+				background-color: transparent;
+				color: var(--c-primary);
+			}
+
+			&:not(:disabled, .is-disabled):is(:hover, :focus, :active) {
+				border-color: var(--c-primary);
+				background-color: var(--c-primary-soft);
+				color: var(--c-primary);
+			}
+
+			&:focus-visible {
+				outline: 2px solid var(--c-primary);
+				outline-offset: 3px;
+			}
+
+			&:is(:disabled, .is-disabled) {
+				border-color: var(--c-border);
+				background-color: var(--c-bg-soft);
+				color: var(--c-text-3);
+				cursor: not-allowed;
+			}
+		}
+
+		.el-input.is-disabled .el-input__inner,
+		.el-textarea.is-disabled .el-textarea__inner {
+			border-color: var(--c-border);
+			background-color: var(--c-bg-soft);
+			color: var(--c-text-3);
+			cursor: not-allowed;
+		}
+	}
 
 	.tk-admin-container {
 		position: fixed;
@@ -198,7 +314,14 @@ onMounted(() => {
 
 	.tk-expand {
 		border-radius: 0.5em;
+		color: var(--c-text-2);
 		transition: background-color 0.1s;
+
+		&:hover,
+		&:active {
+			background-color: var(--c-bg-2);
+			color: var(--c-text);
+		}
 	}
 
 	.tippy-svg-arrow > svg {

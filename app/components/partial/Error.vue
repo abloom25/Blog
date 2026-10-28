@@ -51,7 +51,7 @@ withDefaults(defineProps<{
 	> .error-title {
 		font-size: 1.5rem;
 		word-break: break-all;
-		color: var(--c-text-3);
+		color: var(--c-text-1);
 
 		> :deep(pre) {
 			font-size: 1rem;

@@ -84,9 +84,11 @@
     "remark-math": "catalog:content",
     "remark-reading-time": "catalog:content",
     "rimraf": "catalog:util",
+    "sharp": "catalog:util",
     "strip-ansi": "catalog:util",
     "typescript": "catalog:framework",
     "unplugin-yaml": "catalog:framework",
-    "unrun": "catalog:framework"
+    "unrun": "catalog:framework",
+    "yaml": "catalog:util"
   }
 }

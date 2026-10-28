@@ -45,8 +45,8 @@ function render() {
 
 :deep() {
 	> .chat-caption {
-		opacity: 0.8;
 		font-size: 0.9em;
+		color: var(--c-text-2);
 	}
 
 	> .chat-body {
@@ -58,6 +58,7 @@ function render() {
 		border-radius: 1em;
 		border-start-start-radius: 0.2em;
 		background-color: var(--c-bg-2);
+		color: var(--c-text-1);
 	}
 
 	> .chat-system {

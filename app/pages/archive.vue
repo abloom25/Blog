@@ -123,7 +123,6 @@ function getArticleYear(article: ArticleProps) {
 <style scoped>
 .archive {
 	padding: 1rem; /* 防止内部 outline 被 mask */
-	mask-image: linear-gradient(#FFF 50%, #FFF7);
 }
 
 .archive-group {
@@ -154,7 +153,6 @@ function getArticleYear(article: ArticleProps) {
 	justify-content: space-between;
 	gap: 1em;
 	position: sticky;
-	opacity: 0.5;
 	top: 0;
 	font-size: min(1.5em, 5vw);
 	color: transparent;
@@ -196,6 +194,7 @@ function getArticleYear(article: ArticleProps) {
 		flex-wrap: wrap;
 		justify-content: flex-end;
 		column-gap: 0.5em;
+		color: var(--c-text-2);
 	}
 }
 </style>

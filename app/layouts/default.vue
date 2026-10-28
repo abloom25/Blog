@@ -6,6 +6,9 @@ const { slots } = provideLayoutSlots()
 <NuxtLoadingIndicator />
 <NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
 <BlogSkipToContent />
+<BlogCover>
+	<slot name="cover" />
+</BlogCover>
 <BlogSidebar />
 <main id="main-content">
 	<slot />
@@ -25,23 +28,28 @@ const { slots } = provideLayoutSlots()
 <style>
 #blog-root {
 	--aside-width: 280px;
-	--sidebar-width: var(--aside-width);
+	--sidebar-width: 248px;
+	--layout-row: 1;
+	--layout-gutter: max(2.5rem, calc((100vw - 1440px) / 2));
 
 	display: grid;
 	grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--aside-width);
 	align-items: start;
-	column-gap: 1rem;
+	column-gap: 1.5rem;
 	width: 100%;
 	min-width: 0;
-	max-width: calc(var(--aside-width) + 1rem + 1080px);
 	margin-inline: auto;
+	padding-inline: var(--layout-gutter);
 
 	&:not(:has(> .blog-aside-track > #blog-aside:not(.is-empty))) {
 		grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
 	}
 
 	@media (max-width: 1080px) {
-		--sidebar-width: clamp(240px, 25vw, var(--aside-width));
+		--sidebar-width: 224px;
+		--layout-gutter: 1.5rem;
+
+		column-gap: 2rem;
 
 		&, &:not(:has(> .blog-aside-track > #blog-aside:not(.is-empty))) {
 			grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
@@ -49,8 +57,33 @@ const { slots } = provideLayoutSlots()
 	}
 
 	@media (max-width: 768px) {
+		--layout-gutter: 0.5rem;
+
 		&, &:not(:has(> .blog-aside-track > #blog-aside:not(.is-empty))) {
 			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	&:has(> .post-masthead) {
+		--layout-row: 2;
+
+		> .post-masthead {
+			grid-area: 1 / 2 / auto / -1;
+			min-width: 0;
+			margin: 0 calc(-1 * var(--layout-gutter)) 0 0;
+
+			> .post-header { margin: 0; }
+		}
+
+		> #blog-sidebar {
+			grid-area: 1 / 1 / span 2;
+		}
+
+		@media (max-width: 768px) {
+			> .post-masthead {
+				grid-column: 1 / -1;
+				margin-inline-start: calc(-1 * var(--layout-gutter));
+			}
 		}
 	}
 }
@@ -65,18 +98,20 @@ const { slots } = provideLayoutSlots()
 }
 
 #blog-sidebar {
-	grid-area: 1 / 1;
+	grid-area: var(--layout-row) / 1;
 }
 
 #main-content {
-	grid-area: 1 / 2;
+	grid-area: var(--layout-row) / 2;
 	/* 保留语义 main 和可见溢出，不影响正文内的 sticky 元素。 */
 	min-width: 0;
+	padding-top: 1.5rem;
 
 	:root[data-article-transition] & { view-transition-name: article-body; }
 
 	@media (max-width: 768px) {
 		grid-column: 1;
+		padding-top: 0.5rem;
 	}
 }
 
@@ -86,15 +121,16 @@ const { slots } = provideLayoutSlots()
 	@media not (max-width: 1080px) {
 		&:has(> #blog-aside:not(.is-empty)) {
 			display: block;
-			grid-area: 1 / 3;
+			grid-area: var(--layout-row) / 3;
 			align-self: stretch;
 			min-width: 0;
+			padding-top: 1.5rem;
 		}
 	}
 }
 
 #blog-root > .blog-footer {
-	grid-area: 2 / 2 / auto / -1;
+	grid-area: calc(var(--layout-row) + 1) / 2 / auto / -1;
 	min-width: 0;
 
 	@media (max-width: 768px) {

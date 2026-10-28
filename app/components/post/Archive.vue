@@ -50,8 +50,8 @@ const mainDate = computed(() => props.useUpdated ? props.updated : props.date)
 	}
 
 	.dim-hover {
-		opacity: 0.4;
-		transition: opacity 0.2s;
+		color: var(--c-text-2);
+		transition: color 0.2s;
 	}
 
 	:deep(time) {
@@ -69,7 +69,7 @@ const mainDate = computed(() => props.useUpdated ? props.updated : props.date)
 		}
 
 		.dim-hover {
-			opacity: 1;
+			color: var(--c-text);
 		}
 	}
 }
@@ -96,7 +96,7 @@ const mainDate = computed(() => props.useUpdated ? props.updated : props.date)
 
 		&::before {
 			content: "#";
-			opacity: 0.5;
+			color: var(--c-text-3);
 		}
 	}
 }

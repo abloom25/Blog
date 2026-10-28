@@ -169,7 +169,8 @@ function openActiveItem() {
 	border-radius: 1em;
 	box-shadow: var(--box-shadow-2), var(--box-shadow-3);
 	outline: 0.2em solid var(--c-primary-soft);
-	background-color: var(--ld-bg-card);
+	background-color: var(--c-bg-a80);
+	backdrop-filter: blur(24px);
 }
 
 .input {
@@ -183,6 +184,11 @@ function openActiveItem() {
 		width: 100%;
 		padding: 1em 0;
 		outline: none;
+
+		&::placeholder {
+			opacity: 1;
+			color: var(--c-text-2);
+		}
 	}
 }
 

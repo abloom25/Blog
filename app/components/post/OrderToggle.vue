@@ -69,10 +69,16 @@ function toggleDirection() {
 <style scoped>
 .order-toggle {
 	display: flex;
-	gap: 1rem;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem 0.75rem;
+	font-size: 0.8rem;
 	color: var(--c-text-2);
 
 	:deep(button), :deep(a) {
+		min-height: 36px;
+		line-height: 2;
+		white-space: nowrap;
 		transition: color 0.2s;
 
 		&:hover {

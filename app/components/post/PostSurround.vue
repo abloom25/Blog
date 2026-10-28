@@ -63,7 +63,7 @@ const [DefineTemplate, ReuseTemplate] = createReusableTemplate<{
 	transition: color 0.2s;
 
 	&:not([href]) {
-		opacity: 0.4;
+		color: var(--c-text-3);
 		user-select: none;
 	}
 
@@ -80,8 +80,8 @@ const [DefineTemplate, ReuseTemplate] = createReusableTemplate<{
 
 		> .date {
 			display: block;
-			opacity: 0.6;
 			font-size: 0.8rem;
+			color: var(--c-text-2);
 		}
 	}
 
